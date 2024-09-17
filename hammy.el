@@ -797,15 +797,22 @@ cycles)."
 (defun hammy-summary (hammy)
   "Return a summary string for HAMMY.
 Summary includes elapsed times, etc."
-  (format "Total elapsed:%s  Intervals:%s  Cycles:%s"
-          (ts-human-format-duration (hammy-elapsed hammy) 'abbr)
-          (mapconcat (lambda (interval)
-                       (format "(%s:%s)"
-                               (hammy-interval-name interval)
-                               (ts-human-format-duration (hammy-elapsed hammy interval) 'abbr)))
-                     (ring-elements (hammy-intervals hammy))
-                     "")
-          (hammy-cycles hammy)))
+  (pcase-let* ((history (hammy-history hammy))
+               (`(,_first-interval . (,first-started ,_first-stopped))
+                (car (last history)))
+               (`(,_last-interval . (,_last-started ,last-stopped))
+                (car history)))
+    (format "Total elapsed:%s  Intervals:%s  Cycles:%s  Started:%s  Stopped:%s"
+            (ts-human-format-duration (hammy-elapsed hammy) 'abbr)
+            (mapconcat (lambda (interval)
+                         (format "(%s:%s)"
+                                 (hammy-interval-name interval)
+                                 (ts-human-format-duration (hammy-elapsed hammy interval) 'abbr)))
+                       (ring-elements (hammy-intervals hammy))
+                       "")
+            (hammy-cycles hammy)
+            (format-time-string "%Y-%m-%d %H:%M:%S" first-started)
+            (format-time-string "%Y-%m-%d %H:%M:%S" last-stopped))))
 
 (declare-function org-clock-in "org-clock")
 (defun hammy--org-clock-in (hammy)

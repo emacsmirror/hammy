@@ -297,6 +297,7 @@ If you use ~tab-bar-mode~, rather than showing the Hammy status in each window's
 *Changes*
 + Add 10-minute reminders to default pomodoro timer.
 + Command ~hammy-next~ interprets a numeric prefix argument as a number of minutes (rather than a number of seconds).
++ Command ~hammy-summary~ shows the times at which a hammy's first interval was started and its last interval ended.
 + Internal optimization of mode line lighter.
 
 *Fixes*
