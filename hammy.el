@@ -511,13 +511,10 @@ If QUIETLY, don't say so."
                            (etc (map reminder)))
                 hammy)
                ;; TODO: Logging, totals, etc.
-               (message "Stopped."))
+               )
     (when internal-timer
       (cancel-timer internal-timer)
-      (setf (hammy-timer hammy) nil)
-      (hammy-log hammy message)
-      (unless quietly
-        (message message)))
+      (setf (hammy-timer hammy) nil))
     (when reminder
       (cancel-timer reminder)
       (setf (alist-get 'reminder (hammy-etc hammy)) nil))
@@ -535,6 +532,8 @@ If QUIETLY, don't say so."
       ;; HACK: `hammy--mode-line-update' only updates when a hammy is
       ;; active, so we do it directly.
       (force-mode-line-update 'all))
+    (unless quietly
+      (message (hammy-format hammy "Stopped.")))
     hammy))
 
 (cl-defun hammy-next (hammy &key duration advance interval)
